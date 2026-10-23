@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
@@ -107,5 +108,42 @@ public class PersonaDAOImpl implements PersonaDAO {
     public Optional<Persona> listarPorId(int codigo) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+    
+    public void validarCodigo(int codigo){
+        if (codigo<=0){
+            throw new IllegalArgumentException("El codigo no puede ser menor a 1");
+        }
+    }
+    
+    public void validarDatosPersona(Persona objPersona){
+        
+        if (objPersona == null){
+            throw new IllegalArgumentException("Los datos de la persona es obligatoria");
+        }
+        
+        if (objPersona.getNombres() == null  || objPersona.getNombres().isBlank()){
+            throw new IllegalArgumentException("El nombre de la persona es obligatorio");
+        }
+        
+        if (objPersona.getApellidos()== null || objPersona.getApellidos().isBlank()){
+            throw new IllegalArgumentException("El apellido de la persona es obligatorio");
+        }
+        
+        if (objPersona.getFechaNacimiento() == null){
+            throw new IllegalArgumentException("La fecha de nacimiento es obligatorio");
+        }
+        
+        if (objPersona.getFechaNacimiento().isAfter(LocalDate.now())){
+            throw new IllegalArgumentException("La fecha de nacimiento no debe ser posterior a hoy");
+        }
+        
+        
+    }
+    
+    
+    
+    
+    
+    
 
 }
