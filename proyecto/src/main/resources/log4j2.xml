@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Properties>
+        <Property name="rutaLogs">logs</Property>
+        <Property name="formato">%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{1} - %msg%n</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="Consola" target="SYSTEM_OUT">
+            <PatternLayout pattern="${formato}"/>
+        </Console>
+
+        <RollingFile name="Archivo"
+                     fileName="${rutaLogs}/proyecto.log"
+                     filePattern="${rutaLogs}/proyecto-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout pattern="${formato}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Consola"/>
+            <AppenderRef ref="Archivo"/>
+        </Root>
+    </Loggers>
+</Configuration>

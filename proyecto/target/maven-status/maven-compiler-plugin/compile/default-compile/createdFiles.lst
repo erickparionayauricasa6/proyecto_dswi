@@ -1,0 +1,8 @@
+com\idat\proyecto\dao\impl\PersonaDAOImpl.class
+com\idat\proyecto\app\TestConexion.class
+com\idat\proyecto\config\ConexionBD.class
+com\idat\proyecto\app\Proyecto.class
+com\idat\proyecto\dao\PersonaDAO.class
+com\idat\proyecto\service\ProductoService.class
+com\idat\proyecto\service\impl\ProductoServiceImpl.class
+com\idat\proyecto\model\Producto.class
