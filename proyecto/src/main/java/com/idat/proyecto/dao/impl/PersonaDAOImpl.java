@@ -17,41 +17,34 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class PersonaDAOImpl implements PersonaDAO {
-    
-    private static final Logger LOG = 
-            LogManager.getLogger(PersonaDAOImpl.class);
-    
+
+    private static final Logger LOG
+            = LogManager.getLogger(PersonaDAOImpl.class);
+
     private TipoBaseDatos tipoBaseDatos;
-    
-    public PersonaDAOImpl(TipoBaseDatos tipoBaseDatos){
-        if(tipoBaseDatos == null)
+
+    public PersonaDAOImpl(TipoBaseDatos tipoBaseDatos) {
+        if (tipoBaseDatos == null) {
             throw new IllegalArgumentException("El gestor de bd es obligatorio");
-        this.tipoBaseDatos=tipoBaseDatos;
+        }
+        this.tipoBaseDatos = tipoBaseDatos;
     }
-    
-    
-    
+
     @Override
     public int insertar(Persona objPersona) throws SQLException {
         //Connection PreparedStatement
-        try(
-                Connection con = conexionBd();
-                PreparedStatement sentencia = con.prepareStatement(
+        try (
+                Connection con = conexionBd(); PreparedStatement sentencia = con.prepareStatement(
                         ConstantesBd.QUERY_PERSONA_INSERTAR,
-                        Statement.RETURN_GENERATED_KEYS);
-                ){
-            sentencia.setString(1, objPersona.getNombres());
-            sentencia.setString(2, objPersona.getApellidos());
-            sentencia.setString(3, objPersona.getCorreo());
-            sentencia.setDate(4, Date.valueOf(objPersona.getFechaNacimiento()));
-            
-            if (sentencia.executeUpdate() == 0 ){
+                        Statement.RETURN_GENERATED_KEYS);) {
+
+            asignacionParametros(sentencia, objPersona);
+            if (sentencia.executeUpdate() == 0) {
                 throw new SQLException("Error al ejecutar la sentencia de insercion");
             }
-            try(
-                    ResultSet resultado = sentencia.getGeneratedKeys();
-               ){
-                if (resultado.next()){
+            try (
+                    ResultSet resultado = sentencia.getGeneratedKeys();) {
+                if (resultado.next()) {
                     int codigo = resultado.getInt(1);
                     objPersona.setId(codigo);
                     return codigo;
@@ -60,24 +53,49 @@ public class PersonaDAOImpl implements PersonaDAO {
             throw new SQLException("Error al generar el codigo");
         }
     }
-    
-    private Connection conexionBd() throws SQLException{
-        return switch(tipoBaseDatos){
-            case MYSQL -> ConexionBD.conectarMySQL();
-            case SQLSERVER -> ConexionBD.conectarSqlServer();
-            default -> throw new SQLException("El SGBD no es soportado en el proyecto");
+
+    private Connection conexionBd() throws SQLException {
+        return switch (tipoBaseDatos) {
+            case MYSQL ->
+                ConexionBD.conectarMySQL();
+            case SQLSERVER ->
+                ConexionBD.conectarSqlServer();
+            default ->
+                throw new SQLException("El SGBD no es soportado en el proyecto");
         };
     }
-    
 
     @Override
     public boolean actualizar(Persona objPersona) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try (
+                Connection con = conexionBd(); PreparedStatement sentencia = con.prepareStatement(
+                        ConstantesBd.QUERY_PERSONA_ACTUALIZAR);) {
+            asignacionParametros(sentencia, objPersona);
+            sentencia.setInt(5, objPersona.getId());
+            return sentencia.executeUpdate() > 0;
+        }
+    }
+
+    public void asignacionParametros(PreparedStatement sentencia,
+            Persona objPersona
+    ) throws SQLException {
+        sentencia.setString(1, objPersona.getNombres());
+        sentencia.setString(2, objPersona.getApellidos());
+        sentencia.setString(3, objPersona.getCorreo());
+        sentencia.setDate(4, Date.valueOf(objPersona.getFechaNacimiento()));
     }
 
     @Override
     public boolean eliminar(int codigo) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        
+        try (
+                Connection con = conexionBd(); 
+                PreparedStatement sentencia = con.prepareStatement(
+                        ConstantesBd.QUERY_PERSONA_ELIMINAR);) {
+            
+            sentencia.setInt(1, codigo);
+            return sentencia.executeUpdate() > 0;
+        }
     }
 
     @Override
@@ -89,7 +107,5 @@ public class PersonaDAOImpl implements PersonaDAO {
     public Optional<Persona> listarPorId(int codigo) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
-    
-    
+
 }
