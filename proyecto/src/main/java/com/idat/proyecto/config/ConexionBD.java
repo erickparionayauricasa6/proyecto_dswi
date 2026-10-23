@@ -12,7 +12,7 @@ public final class ConexionBD {
 
     private static final String SERVIDOR = "localhost";
     private static final String BASE_DATOS = "proyecto";
-    private static final String CONTRASENA = "sistemas";
+    private static final String CONTRASENA = "123456";
 
     private static final int PUERTO_MYSQL = 3306;
     private static final String USUARIO_MYSQL = "root";

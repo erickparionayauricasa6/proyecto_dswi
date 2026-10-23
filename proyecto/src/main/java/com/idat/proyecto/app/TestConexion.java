@@ -17,10 +17,10 @@ public final class TestConexion {
 
     public static void main(String[] args) {
         boolean mysqlConectado = probarMySQL();
-        boolean sqlServerConectado = probarSqlServer();
+        //boolean sqlServerConectado = probarSqlServer();
 
         LOGGER.info("Resultado MySQL: {}", mysqlConectado ? "CONECTADO" : "NO CONECTADO");
-        LOGGER.info("Resultado SQL Server: {}", sqlServerConectado ? "CONECTADO" : "NO CONECTADO");
+        //LOGGER.info("Resultado SQL Server: {}", sqlServerConectado ? "CONECTADO" : "NO CONECTADO");
     }
 
     public static boolean probarMySQL() {
