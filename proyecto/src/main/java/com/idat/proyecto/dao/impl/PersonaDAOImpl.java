@@ -52,10 +52,13 @@ public class PersonaDAOImpl implements PersonaDAO {
                 }
             }
             throw new SQLException("Error al generar el codigo");
+        } catch (ClassNotFoundException ex) {
+            System.getLogger(PersonaDAOImpl.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
+        return 0;
     }
 
-    private Connection conexionBd() throws SQLException {
+    private Connection conexionBd() throws SQLException, ClassNotFoundException {
         return switch (tipoBaseDatos) {
             case MYSQL ->
                 ConexionBD.conectarMySQL();
@@ -74,7 +77,10 @@ public class PersonaDAOImpl implements PersonaDAO {
             asignacionParametros(sentencia, objPersona);
             sentencia.setInt(5, objPersona.getId());
             return sentencia.executeUpdate() > 0;
+        } catch (ClassNotFoundException ex) {
+            System.getLogger(PersonaDAOImpl.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
+        return false;
     }
 
     public void asignacionParametros(PreparedStatement sentencia,
@@ -96,7 +102,10 @@ public class PersonaDAOImpl implements PersonaDAO {
             
             sentencia.setInt(1, codigo);
             return sentencia.executeUpdate() > 0;
+        } catch (ClassNotFoundException ex) {
+            System.getLogger(PersonaDAOImpl.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
+        return false;
     }
 
     @Override

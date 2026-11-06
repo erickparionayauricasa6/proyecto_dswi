@@ -15,7 +15,7 @@ public final class TestConexion {
         // Evita crear objetos de esta clase de utilidades.
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
         boolean mysqlConectado = probarMySQL();
         //boolean sqlServerConectado = probarSqlServer();
 
@@ -23,7 +23,7 @@ public final class TestConexion {
         //LOGGER.info("Resultado SQL Server: {}", sqlServerConectado ? "CONECTADO" : "NO CONECTADO");
     }
 
-    public static boolean probarMySQL() {
+    public static boolean probarMySQL() throws SQLException, ClassNotFoundException {
         try (Connection conexion = ConexionBD.conectarMySQL()) {
 
             boolean conexionValida = conexion.isValid(TIEMPO_ESPERA_SEGUNDOS);
