@@ -1,0 +1,16 @@
+
+
+
+# Conexion a Mysql
+db.mysql.host=
+db.mysql.port=
+db.mysql.user=
+db.mysql.password=
+db.mysql.database=
+
+# Conexion a Sql SERVER
+db.sqlserver.host=
+db.sqlserver.port=
+db.sqlserver.user=
+db.sqlserver.password=
+db.sqlserver.database=
