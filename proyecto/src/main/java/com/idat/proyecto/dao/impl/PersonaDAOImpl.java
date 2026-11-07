@@ -12,6 +12,7 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
@@ -94,12 +95,11 @@ public class PersonaDAOImpl implements PersonaDAO {
 
     @Override
     public boolean eliminar(int codigo) throws SQLException {
-        
+
         try (
-                Connection con = conexionBd(); 
-                PreparedStatement sentencia = con.prepareStatement(
+                Connection con = conexionBd(); PreparedStatement sentencia = con.prepareStatement(
                         ConstantesBd.QUERY_PERSONA_ELIMINAR);) {
-            
+
             sentencia.setInt(1, codigo);
             return sentencia.executeUpdate() > 0;
         } catch (ClassNotFoundException ex) {
@@ -110,49 +110,67 @@ public class PersonaDAOImpl implements PersonaDAO {
 
     @Override
     public List<Persona> listado() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+
+        List<Persona> listado = new ArrayList<>();
+        try (
+                Connection con = conexionBd(); PreparedStatement pst = con.prepareStatement(ConstantesBd.QUERY_PERSONA_LISTAR); ResultSet resultado = pst.executeQuery();) {
+
+            while (resultado.next()) {
+                listado.add(getPersonaRs(resultado));
+            }
+
+        } catch (ClassNotFoundException ex) {
+            System.getLogger(PersonaDAOImpl.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+
+        return listado;
     }
 
     @Override
     public Optional<Persona> listarPorId(int codigo) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
-    public void validarCodigo(int codigo){
-        if (codigo<=0){
+
+    public void validarCodigo(int codigo) {
+        if (codigo <= 0) {
             throw new IllegalArgumentException("El codigo no puede ser menor a 1");
         }
     }
-    
-    public void validarDatosPersona(Persona objPersona){
-        
-        if (objPersona == null){
+
+    public void validarDatosPersona(Persona objPersona) {
+
+        if (objPersona == null) {
             throw new IllegalArgumentException("Los datos de la persona es obligatoria");
         }
-        
-        if (objPersona.getNombres() == null  || objPersona.getNombres().isBlank()){
+
+        if (objPersona.getNombres() == null || objPersona.getNombres().isBlank()) {
             throw new IllegalArgumentException("El nombre de la persona es obligatorio");
         }
-        
-        if (objPersona.getApellidos()== null || objPersona.getApellidos().isBlank()){
+
+        if (objPersona.getApellidos() == null || objPersona.getApellidos().isBlank()) {
             throw new IllegalArgumentException("El apellido de la persona es obligatorio");
         }
-        
-        if (objPersona.getFechaNacimiento() == null){
+
+        if (objPersona.getFechaNacimiento() == null) {
             throw new IllegalArgumentException("La fecha de nacimiento es obligatorio");
         }
-        
-        if (objPersona.getFechaNacimiento().isAfter(LocalDate.now())){
+
+        if (objPersona.getFechaNacimiento().isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("La fecha de nacimiento no debe ser posterior a hoy");
         }
-        
-        
+
     }
-    
-    
-    
-    
-    
-    
+
+    public Persona getPersonaRs(ResultSet resultadoPersona) throws SQLException {
+
+        return new Persona(
+                resultadoPersona.getInt("id"),
+                resultadoPersona.getString("nombres"),
+                resultadoPersona.getString("apellidos"),
+                resultadoPersona.getString("correo"),
+                resultadoPersona.getDate("fecha_nacimiento").toLocalDate()
+        );
+
+    }
 
 }

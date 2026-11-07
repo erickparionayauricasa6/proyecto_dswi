@@ -6,12 +6,14 @@ import java.util.Optional;
 
 public interface PersonaDAO {
     // 5 metodos
+    // Operaciones Escritura
     int insertar(Persona objPersona) throws SQLException;
 
     boolean actualizar(Persona objPersona) throws SQLException;
 
     boolean eliminar(int codigo) throws SQLException;
-
+    
+    // Operaciones Lectura
     List<Persona> listado() throws SQLException;
 
     Optional<Persona> listarPorId(int codigo) throws SQLException;

@@ -3,6 +3,10 @@ package com.idat.proyecto.utils;
 
 public class ConstantesBd {
     
+    private ConstantesBd(){
+        
+    }
+    
     // Instrucciones DML
     // Insert tabla persona
     //insert into persona(nombres, apellidos, correo, fecha_nacimiento)
@@ -42,6 +46,7 @@ public class ConstantesBd {
             from persona where id=?
             """;
     
+    // Query para tabla Producto
     
     
     
