@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 
 public class PersonaDAOImpl implements PersonaDAO {
 
-    private static final Logger LOG
+    private static final Logger LOGGER
             = LogManager.getLogger(PersonaDAOImpl.class);
 
     private TipoBaseDatos tipoBaseDatos;
@@ -54,7 +54,7 @@ public class PersonaDAOImpl implements PersonaDAO {
             }
             throw new SQLException("Error al generar el codigo");
         } catch (ClassNotFoundException ex) {
-            System.getLogger(PersonaDAOImpl.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            LOGGER.error("insertar() - Nombre: {} - Apellidos: {} - Error: {} ", objPersona.getNombres(), objPersona.getApellidos(), ex.getMessage());
         }
         return 0;
     }
@@ -103,7 +103,7 @@ public class PersonaDAOImpl implements PersonaDAO {
             sentencia.setInt(1, codigo);
             return sentencia.executeUpdate() > 0;
         } catch (ClassNotFoundException ex) {
-            System.getLogger(PersonaDAOImpl.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            LOGGER.error("eliminar() - Codigo: {} - Error: {} ", codigo, ex.getMessage());
         }
         return false;
     }
@@ -128,7 +128,20 @@ public class PersonaDAOImpl implements PersonaDAO {
 
     @Override
     public Optional<Persona> listarPorId(int codigo) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        validarCodigo(codigo);
+        try (
+                Connection con = conexionBd(); PreparedStatement pst = con.prepareStatement(ConstantesBd.QUERY_PERSONA_CONSULTAR_X_ID);) {
+            pst.setInt(1, codigo);
+            try (
+                    ResultSet resultado = pst.executeQuery();) {
+                if (resultado.next()) {
+                    return Optional.of(getPersonaRs(resultado));
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            System.getLogger(PersonaDAOImpl.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+        return Optional.empty();
     }
 
     public void validarCodigo(int codigo) {
